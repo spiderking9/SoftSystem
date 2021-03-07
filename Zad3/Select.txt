@@ -1,0 +1,33 @@
+WITH gatunki
+     AS (SELECT g.genre,
+                g.genre_id,
+                0 level,
+                g.parent_id,
+                Cast(g.genre AS VARCHAR(200))AS "Connection"
+         FROM   dbo.genres g
+         WHERE  g.parent_id = 0
+         UNION ALL
+         SELECT c.genre,
+                c.genre_id,
+                p.level + 1 AS Level,
+                c.parent_id,
+                Cast(( Trim(p.connection) + '/' + c.genre ) AS VARCHAR(200)) AS "Connection"
+         FROM   dbo.genres c
+                INNER JOIN gatunki p
+                        ON p.genre_id = c.parent_id)
+SELECT Authors,
+       [connection] AS Genre,
+       b.title,
+       p.[name]     AS Publisher
+FROM   gatunki g
+       JOIN book_genres bk ON bk.genre_id = g.genre_id
+       JOIN books b ON b.book_id = bk.book_id
+       JOIN publishers p ON b.publisher_id = p.publisher_id
+       JOIN (SELECT book_id,
+					String_agg(Trim(a.first_name) + ' ' + Trim(a.last_name), ', ') AS Authors
+			FROM   dbo.authors a
+			JOIN book_authors ba
+			ON ba.author_id = a.author_id
+			GROUP  BY book_id) AS baa
+		ON baa.book_id = b.book_id order by Genre
+
