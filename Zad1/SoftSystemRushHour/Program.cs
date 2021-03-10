@@ -27,8 +27,9 @@ namespace SoftSystemRushHour
 
 
             RoomsForActivitiesCounter days = new RoomsForActivitiesCounter(list);
-            days.ShowRoomsWhereActivitiesWillBe();
-            days.ShowHowManyRoomsYouNeedForActivities();
+            Show show = new Show(days.RoomWhereActivitiesWillBe, days.LastRoomOfActivities);
+            show.ShowRoomsWhereActivitiesWillBe();
+            show.ShowHowManyRoomsYouNeedForActivities();
             Console.ReadKey();
         }
     }
