@@ -27,26 +27,40 @@ namespace SoftSystemRushHour
 
         void Counter()
         {
-            if (list.ToList().Where(x => x.Free == true).Any())
+            var listWithFreeActivities = list.ToList().Where(x => x.Free == true);
+
+            if (listWithFreeActivities.Any())
             {
-                if (list.ToList().Where(x => x.Free == true && x.StartHour >= whenLastAcitivitieFinish).Any())
+                //if is any activitie which starts after the last assigned find one with min hour and add it to table
+                if (listWithFreeActivities.Where(x => x.StartHour >= whenLastAcitivitieFinish).Any())
                 {
-                    var activitieWithMinHourStart = list.ToList().Where(x => x.Free == true && x.StartHour >= whenLastAcitivitieFinish).Aggregate((curMin, x) => (curMin == null || x.StartHour < curMin.StartHour ? x : curMin));
+                    var activitieWithMinHourStart = GetActivitieWithMinHourStart();
+
                     whenLastAcitivitieFinish = activitieWithMinHourStart.StopHour;
                     roomWhereActivitiesWillBe[lastRoomOfActivities] += activitieWithMinHourStart.ActivitieId + ", ";
                     activitieWithMinHourStart.Free = false;
+
                     Counter();
                 }
+                //if not we add another classroom, reset hour variable and run again Conter
                 else
                 {
-                    if (list.ToList().Where(x => x.Free == true).Any())
+                    if (listWithFreeActivities.Any())
                     {
                         lastRoomOfActivities++;
                         whenLastAcitivitieFinish = 0;
+
                         Counter();
                     }
                 }
             }
+        }
+
+        ActivitiesHour GetActivitieWithMinHourStart()
+        {
+            return list.ToList()
+                .Where(x => x.Free == true && x.StartHour >= whenLastAcitivitieFinish)
+                .Aggregate((curMin, x) => curMin == null || x.StartHour < curMin.StartHour ? x : curMin);
         }
 
         public void ShowRoomsWhereActivitiesWillBe()

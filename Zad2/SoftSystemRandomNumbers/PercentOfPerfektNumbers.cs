@@ -10,15 +10,12 @@
         public string Calculate(float numberOfTimesToRoll=10000, int maxValue=2800)
         {
             perfekt = new PerfektNumberOrNot();
-            for (int i = 0; i < numberOfTimesToRoll; i++)
-            {
-                myRandom = new MyRandom();
-                long www = myRandom.GenerateNumber(maxValue);
-                howManyTimesPerfektNumber += perfekt.CheckNumber(www) ? 1 : 0;
-            }
-            float xxx = howManyTimesPerfektNumber/ numberOfTimesToRoll;
+            myRandom = new MyRandom();
 
-            return $"Procent {xxx:0.00%}";
+            //Checks x times if the random number is perfect, if is then add it to the variable
+            for (int i = 0; i < numberOfTimesToRoll; i++) howManyTimesPerfektNumber += perfekt.CheckNumber(myRandom.GenerateNumber(maxValue)) ? 1 : 0;
+
+            return $"Procent {howManyTimesPerfektNumber / numberOfTimesToRoll:0.00%}";
         }
     }
 }
