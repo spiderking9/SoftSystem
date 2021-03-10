@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SoftSystemRushHour
 {
-    public static class GetActivitieWithMinHourStart
+    public static class ActivitieWithMinHourStart
     {
         public static ActivitiesHour Get(List<ActivitiesHour> list, int whenLastAcitivitieFinish)
         {

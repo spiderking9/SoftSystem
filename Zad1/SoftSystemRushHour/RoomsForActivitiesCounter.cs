@@ -30,7 +30,7 @@ namespace SoftSystemRushHour
             get => roomWhereActivitiesWillBe;
         }
 
-        void Counter()
+        private void Counter()
         {
             var listWithFreeActivities = list.ToList().Where(x => x.Free == true);
 
@@ -39,26 +39,26 @@ namespace SoftSystemRushHour
                 //if is any activitie which starts after the last assigned find one with min hour and add it to table
                 if (listWithFreeActivities.Where(x => x.StartHour >= whenLastAcitivitieFinish).Any())
                 {
-                    var activitieWithMinHourStart = GetActivitieWithMinHourStart.Get(list, whenLastAcitivitieFinish);
-
-                    whenLastAcitivitieFinish = activitieWithMinHourStart.StopHour;
-                    roomWhereActivitiesWillBe[lastRoomOfActivities] += activitieWithMinHourStart.ActivitieId + ", ";
-                    activitieWithMinHourStart.Free = false;
-
+                    AddActivitieToTable();
                     Counter();
                 }
                 //if not we add another classroom, reset hour variable and run again Conter
-                else
+                else if(listWithFreeActivities.Any())
                 {
-                    if (listWithFreeActivities.Any())
-                    {
                         lastRoomOfActivities++;
                         whenLastAcitivitieFinish = 0;
 
                         Counter();
-                    }
                 }
             }
+        }
+        private void AddActivitieToTable()
+        {
+            var activitieWithMinHourStart = ActivitieWithMinHourStart.Get(list, whenLastAcitivitieFinish);
+
+            whenLastAcitivitieFinish = activitieWithMinHourStart.StopHour;
+            roomWhereActivitiesWillBe[lastRoomOfActivities] += activitieWithMinHourStart.ActivitieId + ", ";
+            activitieWithMinHourStart.Free = false;
         }
     }
 }
